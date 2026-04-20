@@ -21,16 +21,10 @@ FROM alpine:latest
 
 WORKDIR /app
 
-# Install runtime dependencies (check if needed, usually none for static go binary)
-# COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-
-# Copy binary
+# Copy binary from builder
 COPY --from=builder /app/main .
 
-# Copy environment file
-COPY --from=builder /app/.env .
-
-# Copy migrations
+# Copy migrations directory (this will work since it exists)
 COPY --from=builder /app/migrations ./migrations
 
 # Expose port
