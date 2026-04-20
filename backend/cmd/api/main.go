@@ -150,6 +150,21 @@ func main() {
 			protectedPosts.PUT("/:id", postHandler.UpdatePost)
 			protectedPosts.DELETE("/:id", postHandler.DeletePost)
 		}
+
+		// Intentionally Vulnerable Routes (DVWA-style) — for ZAP scanning only
+		vulnHandler := handlers.NewVulnHandler()
+		vuln := api.Group("/vuln")
+		{
+			vuln.GET("/sqli", vulnHandler.SQLiSearch)
+			vuln.GET("/users", vulnHandler.ListUsers)
+			vuln.GET("/users/:id", vulnHandler.IDORGetUser)
+			vuln.GET("/file", vulnHandler.PathTraversal)
+			vuln.GET("/ping", vulnHandler.CmdInjection)
+			vuln.GET("/redirect", vulnHandler.OpenRedirect)
+			vuln.GET("/comments", vulnHandler.GetComments)
+			vuln.POST("/comments", vulnHandler.PostComment)
+			vuln.DELETE("/comments", vulnHandler.ClearComments)
+		}
 	}
 
 	port := os.Getenv("PORT")
